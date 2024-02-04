@@ -22,7 +22,11 @@ const createContactDB = async (name, email, phone, favorite) => {
 };
 
 const updateContactDB = async ({ id, name, email, phone, favorite }) => {
-  await Contact.findOneAndUpdate(
+  const contact = await Contact.findOne({ _id: id });
+  if (!contact) {
+    return null;
+  }
+  return await Contact.findByIdAndUpdate(
     { _id: id },
     {
       $set: {
@@ -34,9 +38,6 @@ const updateContactDB = async ({ id, name, email, phone, favorite }) => {
     },
     { new: true }
   );
-
-  const contact = await Contact.findById(id);
-  return contact;
 };
 
 const removeContactDB = async (id) => {
