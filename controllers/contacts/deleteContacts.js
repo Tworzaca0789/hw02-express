@@ -1,8 +1,8 @@
-import { listContacts, removeContact } from "../../models/contacts.js";
+import { listContactsDB, removeContactDB } from "../../models/contacts.js";
 
 export async function deleteContacts(req, res, next) {
-  removeContact();
-  const contacts = await listContacts();
+  removeContactDB();
+  const contacts = await listContactsDB();
   const { id } = req.params;
   const newContacts = contacts.findIndex((contact) => contact.id !== id);
   try {

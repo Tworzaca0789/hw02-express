@@ -1,8 +1,8 @@
-import { getContactById } from "../../models/contacts.js";
+import { getContactByIdDB } from "../../models/contacts.js";
 
 export async function showContacts(req, res, next) {
   try {
-    const contacts = await getContactById();
+    const contacts = await getContactByIdDB();
     const { id } = req.params;
 
     const contact = contacts.filter((contact) => contact.id === parseInt(id));
