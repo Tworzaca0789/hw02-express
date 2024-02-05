@@ -3,9 +3,9 @@ import mongoose from "mongoose";
 import "dotenv/config";
 
 const PORT = process.env.PORT || 3000;
-const uriDb = process.env.DATABASE_URL;
+const DATABASE_URL = process.env.DATABASE_URL;
 
-const connection = mongoose.connect(uriDb);
+const connection = mongoose.connect(DATABASE_URL);
 
 connection
   .then(() => {
@@ -14,6 +14,6 @@ connection
     });
   })
   .catch(
-    (err) => console.log(`Database not connected: ${err.message}`)
-    // process.exit(1)
+    (err) => console.log(`Database not connected: ${err.message}`),
+    process.exit(1)
   );

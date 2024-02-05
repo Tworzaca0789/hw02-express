@@ -21,6 +21,6 @@ const contacts = new Schema(
   { versionKey: false, timestamps: true }
 );
 
-const Contact = model("contact", contacts);
+const Contact = mongoose.model("contact", contacts);
 
 export default Contact;
