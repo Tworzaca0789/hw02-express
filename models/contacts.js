@@ -1,59 +1,54 @@
-import fs from "node:fs/promises";
-import path from "node:path";
+import Contact from "../service/schemas/contact.schemas.js";
 
-const contactsPath = path.join(process.cwd(), "/models/contacts.json");
-
-const listContacts = async () => {
-  const data = await fs.readFile(contactsPath);
-  const contacts = JSON.parse(data);
+const listContactsDB = async () => {
+  const contacts = await Contact.find();
   return contacts;
 };
 
-const getContactById = async (contactId) => {
-  const contacts = await listContacts();
-  const contact = contacts.filter((contact) => contact.id === contactId);
-  if (!contact) {
-    return null;
-  }
+const getContactByIdDB = async (id) => {
+  const contact = await Contact.findOne({ _id: id });
   return contact;
 };
 
-const updateContact = async (contactId, name, email, phone) => {
-  const contacts = await fs.writeFile(
-    contactsPath,
-    JSON.stringify(contactId, (name, email, phone))
+const createContactDB = async (name, email, phone, favorite) => {
+  const contact = await Contact.create({
+    name: req.body.name,
+    email: req.body.email,
+    phone: req.body.phone,
+    favorite: req.body.favorite,
+  });
+  contact.save();
+  return contact;
+};
+
+const updateContactDB = async ({ id, name, email, phone, favorite }) => {
+  const contact = await Contact.findOne({ _id: id });
+  if (!contact) {
+    return null;
+  }
+  return await Contact.findByIdAndUpdate(
+    { _id: id },
+    {
+      $set: {
+        name: req.body.name,
+        email: req.body.email,
+        phone: req.body.phone,
+        favorite: req.body.favorite,
+      },
+    },
+    { new: true }
   );
-  const contact = contacts.find((contact) => contact.id === contactId);
-  if (!contact) {
-    return null;
-  }
-  return contact;
 };
 
-const removeContact = async (contactId) => {
-  const contacts = await listContacts();
-  const index = contacts.findIndex((contact) => contact.id === contactId);
-  if (index === -1) {
-    return null;
-  }
-  const [removeContact] = contacts.splice(index, 1);
-  return removeContact;
-};
-
-const addContact = async (name, email, phone) => {
-  const contacts = await listContacts();
-  const newContact = { id: contacts.length + 1, name, email, phone };
-  contacts.push(newContact);
-  if (!newContact) {
-    return null;
-  }
-  return newContact;
+const removeContactDB = async (id) => {
+  const result = await Contact.findByIdAndDelete({ _id: id });
+  return result;
 };
 
 export {
-  listContacts,
-  getContactById,
-  removeContact,
-  addContact,
-  updateContact,
+  listContactsDB,
+  getContactByIdDB,
+  removeContactDB,
+  createContactDB,
+  updateContactDB,
 };

@@ -1,8 +1,8 @@
-import { listContacts } from "../../models/contacts.js";
+import { listContactsDB } from "../../models/contacts.js";
 
 export async function indexContacts(req, res, next) {
   try {
-    const contacts = await listContacts();
+    const contacts = await listContactsDB();
     return res.status(200).json({
       contacts,
     });

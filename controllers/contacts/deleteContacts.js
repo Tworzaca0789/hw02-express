@@ -1,15 +1,25 @@
-import { listContacts, removeContact } from "../../models/contacts.js";
+import { removeContactDB } from "../../models/contacts.js";
 
 export async function deleteContacts(req, res, next) {
-  removeContact();
-  const contacts = await listContacts();
   const { id } = req.params;
-  const newContacts = contacts.findIndex((contact) => contact.id !== id);
   try {
-    return res.status(200).json({ message: "contact deleted" });
-  } catch (err) {
-    if (newContacts === -1) {
-      return res.status(404).json(`Not found: ${err}`);
+    const result = await removeContactDB({ id });
+    if (result) {
+      res.json({
+        status: "success",
+        code: 200,
+        data: { deletedContact: result },
+      });
+    } else {
+      res.status(404).json({
+        status: "error",
+        code: 404,
+        message: `Not found contact id: ${id}`,
+        data: "Not Found",
+      });
     }
+  } catch (err) {
+    console.error(err);
+    next(err);
   }
 }

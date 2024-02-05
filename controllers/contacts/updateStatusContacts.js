@@ -1,21 +1,22 @@
 import { schema } from "../../helpers/joiValid.js";
 import { updateContactDB } from "../../models/contacts.js";
 
-export async function updateContacts(req, res, next) {
+export const updateStatusContacts = async (req, res, next) => {
   const { value, error } = schema.validate(req.body);
-  const { name, email, phone } = value;
   const { id } = req.params;
+  const { favorite } = value;
+
   if (error) {
-    return res.status(400).json({ message: error.message });
+    return res.status(400).json({ message: "missing field favorite" });
   }
 
   try {
-    const contact = await updateContactDB({ id, name, email, phone });
-    if (contact) {
+    const result = await updateContactDB({ id, favorite });
+    if (result) {
       res.json({
-        status: "success",
+        status: "Success",
         code: 200,
-        data: { updatedContact: contact },
+        data: { updatedContact: result },
       });
     } else {
       res.status(404).json({
@@ -29,4 +30,4 @@ export async function updateContacts(req, res, next) {
     console.error(err);
     next(err);
   }
-}
+};
