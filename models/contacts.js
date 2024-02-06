@@ -5,24 +5,25 @@ const listContactsDB = async () => {
   return contacts;
 };
 
-const getContactByIdDB = async (id) => {
-  const contact = await Contact.findOne({ _id: id });
+const getContactByIdDB = async (id, owner) => {
+  const contact = await Contact.findOne({ _id: id, owner });
   return contact;
 };
 
-const createContactDB = async (name, email, phone, favorite) => {
+const createContactDB = async ({ name, email, phone, favorite, owner }) => {
   const contact = await Contact.create({
-    name: req.body.name,
-    email: req.body.email,
-    phone: req.body.phone,
-    favorite: req.body.favorite,
+    name,
+    email,
+    phone,
+    favorite,
+    owner,
   });
   contact.save();
   return contact;
 };
 
-const updateContactDB = async ({ id, name, email, phone, favorite }) => {
-  const contact = await Contact.findOne({ _id: id });
+const updateContactDB = async ({ id, name, email, phone, favorite, owner }) => {
+  const contact = await Contact.findOne({ _id: id, owner });
   if (!contact) {
     return null;
   }
@@ -30,19 +31,23 @@ const updateContactDB = async ({ id, name, email, phone, favorite }) => {
     { _id: id },
     {
       $set: {
-        name: req.body.name,
-        email: req.body.email,
-        phone: req.body.phone,
-        favorite: req.body.favorite,
+        name,
+        email,
+        phone,
+        favorite,
+        owner,
       },
     },
     { new: true }
   );
 };
 
-const removeContactDB = async (id) => {
-  const result = await Contact.findByIdAndDelete({ _id: id });
-  return result;
+const removeContactDB = async ({ id, owner }) => {
+  const result = await Contact.findOne({ _id: id, owner });
+  if (!result) {
+    return null;
+  }
+  return await Contact.findByIdAndDelete({ _id: id });
 };
 
 export {

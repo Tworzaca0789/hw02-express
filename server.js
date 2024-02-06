@@ -14,6 +14,6 @@ connection
     });
   })
   .catch(
-    (err) => console.log(`Database not connected: ${err.message}`),
-    process.exit(1)
+    (err) => console.log(`Database not connected: ${err.message}`)
+    // process.exit(1)
   );

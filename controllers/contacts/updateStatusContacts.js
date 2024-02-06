@@ -5,13 +5,14 @@ export const updateStatusContacts = async (req, res, next) => {
   const { value, error } = schema.validate(req.body);
   const { id } = req.params;
   const { favorite } = value;
+  const owner = req.user.id;
 
   if (error) {
     return res.status(400).json({ message: "missing field favorite" });
   }
 
   try {
-    const result = await updateContactDB({ id, favorite });
+    const result = await updateContactDB({ id, favorite, owner });
     if (result) {
       res.json({
         status: "Success",

@@ -2,8 +2,10 @@ import { removeContactDB } from "../../models/contacts.js";
 
 export async function deleteContacts(req, res, next) {
   const { id } = req.params;
+  const owner = req.user.id;
+
   try {
-    const result = await removeContactDB({ id });
+    const result = await removeContactDB({ id, owner });
     if (result) {
       res.json({
         status: "success",
