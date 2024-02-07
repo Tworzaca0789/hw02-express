@@ -1,11 +1,11 @@
 import mongoose, { model } from "mongoose";
 const { Schema } = mongoose;
 
-const contacts = new Schema(
+const contactsSchema = new Schema(
   {
     name: {
       type: String,
-      require: [true, "Set name for contact"],
+      required: [true, "Set name for contact"],
     },
     email: {
       type: String,
@@ -25,6 +25,6 @@ const contacts = new Schema(
   { versionKey: false, timestamps: true }
 );
 
-const Contact = mongoose.model("contact", contacts);
+const Contact = model("contact", contactsSchema);
 
 export default Contact;

@@ -10,12 +10,11 @@ const getContactByIdDB = async (id, owner) => {
   return contact;
 };
 
-const createContactDB = async ({ name, email, phone, favorite, owner }) => {
+const createContactDB = async ({ name, email, phone, owner }) => {
   const contact = await Contact.create({
     name,
     email,
     phone,
-    favorite,
     owner,
   });
   contact.save();

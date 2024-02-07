@@ -5,7 +5,7 @@ import cors from "cors";
 import "dotenv/config";
 import { router as contactsRouter } from "./routes/api/contacts.routes.js";
 import { router as usersRouter } from "./routes/api/users.routes.js";
-export const app = express();
+const app = express();
 const formatsLogger = app.get("env") === "development" ? "dev" : "short";
 
 app.use(logger(formatsLogger));
@@ -23,3 +23,5 @@ app.use((req, res) => {
 app.use((err, req, res, next) => {
   res.status(500).json({ message: err.message });
 });
+
+export { app };

@@ -1,8 +1,8 @@
-import { getContactByIdDB } from "../../models/contacts.js";
+import { getContactByIdDB } from "../../service/contacts.service.js";
 
 export async function showContacts(req, res, next) {
   const { id } = req.params;
-  const owner = req.user.id;
+  const owner = req.user;
 
   try {
     const contacts = await getContactByIdDB({ id, owner });

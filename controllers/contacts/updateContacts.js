@@ -1,5 +1,5 @@
 import { schema } from "../../helpers/joiValid.js";
-import { updateContactDB } from "../../models/contacts.js";
+import { updateContactDB } from "../../service/contacts.service.js";
 
 export async function updateContacts(req, res, next) {
   const { value, error } = schema.validate(req.body);

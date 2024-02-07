@@ -1,4 +1,4 @@
-import { createContactDB } from "../../models/contacts.js";
+import { createContactDB } from "../../service/contacts.service.js";
 import { schema } from "../../helpers/joiValid.js";
 
 export const createContacts = async (req, res, next) => {

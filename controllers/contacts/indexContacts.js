@@ -1,11 +1,11 @@
-import { listContactsDB } from "../../models/contacts.js";
+import { listContactsDB } from "../../service/contacts.service.js";
 
 export async function indexContacts(req, res, next) {
   try {
-    const owner = req.iser.id;
+    const owner = req.user.id;
     const favorite = req.query.favorite;
 
-    const contacts = await listContactsDB({ favorite, owner });
+    const contacts = await listContactsDB({ owner, favorite });
     if (!contacts) {
       return res.status(404).json({
         status: "error",
@@ -18,6 +18,7 @@ export async function indexContacts(req, res, next) {
       contacts,
     });
   } catch (err) {
-    res.status(500).json(`An error occurred:${err}`);
+    console.log(err);
+    return res.status(500).json(`An error occurred:${err}`);
   }
 }

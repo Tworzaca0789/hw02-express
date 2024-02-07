@@ -1,4 +1,4 @@
-import { removeContactDB } from "../../models/contacts.js";
+import { removeContactDB } from "../../service/contacts.service.js";
 
 export async function deleteContacts(req, res, next) {
   const { id } = req.params;
@@ -15,7 +15,7 @@ export async function deleteContacts(req, res, next) {
     } else {
       res.status(404).json({
         status: "error",
-        code: 404,
+        code: 40,
         message: `Not found contact id: ${id}`,
         data: "Not Found",
       });
