@@ -5,7 +5,8 @@ export default function auth(req, res, next) {
     if (!user || err) {
       return res.status(401).json({ message: "Token is invalid" });
     }
+
     req.user = user;
-    next();
+    return next();
   })(req, res, next);
 }

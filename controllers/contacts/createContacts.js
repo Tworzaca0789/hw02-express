@@ -5,7 +5,7 @@ export async function createContacts(req, res, next) {
   try {
     const validContact = schema.validate(req.body);
     if (validContact.error) {
-      return res.status(400).json({ error: validContact.error.message });
+      return res.status(400).json({ error: validContact.error });
     }
 
     const contact = await Contact.create({
@@ -17,5 +17,6 @@ export async function createContacts(req, res, next) {
   } catch (err) {
     console.error(err);
     next(err);
+    return res.status(500).json({ message: "Server error" });
   }
 }

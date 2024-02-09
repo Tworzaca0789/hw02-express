@@ -7,7 +7,10 @@ export async function indexContacts(req, res, next) {
     const limit = req.query.limit || 20;
     const favorite = req.query.favorite;
 
-    const result = await Contact.find({ owner, favorite, page, limit });
+    const result = await Contact.find({ owner, favorite }, "", {
+      page,
+      limit,
+    });
 
     return res.status(200).json(result);
   } catch (err) {

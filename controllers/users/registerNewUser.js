@@ -16,7 +16,7 @@ export async function registerNewUser(req, res, next) {
   try {
     const { email, password } = req.body;
 
-    const user = await User.findOne({ email }).lean;
+    const user = await User.findOne({ email }).lean();
     if (user) {
       return res.status(409).json({
         status: "409 conflict",
@@ -27,7 +27,7 @@ export async function registerNewUser(req, res, next) {
     const salt = await bcrypt.genSalt(10);
     const hashPassword = await bcrypt.hash(password, salt);
 
-    const newUser = new User.create({
+    const newUser = await User.create({
       email,
       password: hashPassword,
     });
@@ -39,7 +39,7 @@ export async function registerNewUser(req, res, next) {
       ResponseBody: {
         user: {
           email: newUser.email,
-          subscription: "starter",
+          subscription: newUser.subscription,
         },
       },
     });

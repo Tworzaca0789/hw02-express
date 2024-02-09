@@ -9,6 +9,7 @@ const userSchema = new Schema({
   email: {
     type: String,
     required: [true, "Email is required"],
+    index: true,
     unique: true,
   },
   subscription: {
@@ -23,12 +24,12 @@ const userSchema = new Schema({
 });
 
 export const registerUserSchema = Joi.object({
-  email: Joi.string().email({ minDomainSegments: 3 }).required(),
+  email: Joi.string().email().required(),
   password: Joi.string().min(7).required(),
 });
 
 export const loginUserSchema = Joi.object({
-  email: Joi.string().email({ minDomainSegments: 3 }).required(),
+  email: Joi.string().email().required(),
   password: Joi.string().min(7).required(),
 });
 

@@ -1,17 +1,16 @@
 import { Contact } from "../../service/schemas/contact.schemas.js";
 
 export async function deleteContacts(req, res, next) {
-  const id = req.params.id;
-  const owner = req.user.id;
   try {
-    const result = await Contact.findOne({ id, owner });
+    const { id } = req.params;
+    const { owner } = req.user;
+    const result = await Contact.findOne({ _id: id, owner });
     if (result) {
-      await Contact.findByIdAndDelete({ id });
-
+      const contactDelete = await Contact.findByIdAndDelete({ _id: id });
       return res.json({
         status: "success",
         code: 200,
-        data: { deletedContact: result },
+        data: { deletedContact: contactDelete },
       });
     } else {
       return res.status(404).json({
@@ -24,5 +23,6 @@ export async function deleteContacts(req, res, next) {
   } catch (err) {
     console.error(err);
     next(err);
+    return res.status(500).json({ message: "Serwer error" });
   }
 }

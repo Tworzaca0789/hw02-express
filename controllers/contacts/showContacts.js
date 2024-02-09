@@ -2,9 +2,8 @@ import { Contact } from "../../service/schemas/contact.schemas.js";
 
 export async function showContacts(req, res, next) {
   try {
-    const id = req.params.id;
-    const owner = req.user.id;
-    const contact = await Contact.findOne({ id, owner });
+    const { id } = req.params;
+    const contact = await Contact.findOne({ _id: id });
 
     if (contact) {
       return res.status(200).json({ contact });

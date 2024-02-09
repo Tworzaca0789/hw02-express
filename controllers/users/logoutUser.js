@@ -2,8 +2,6 @@ import { User } from "../../service/schemas/user.schemas.js";
 
 export async function logoutUser(req, res, next) {
   try {
-    const { id } = req.user;
-
     if (!req.user || !req.user.token) {
       return res.status(401).json({
         status: "401",
@@ -11,6 +9,7 @@ export async function logoutUser(req, res, next) {
         ResponseBody: { message: "Not authorized" },
       });
     }
+    const { id } = req.user;
     await User.findByIdAndUpdate({ _id: id }, { token: null }, { new: true });
     return res.status(204).json({
       status: "204 No Content",

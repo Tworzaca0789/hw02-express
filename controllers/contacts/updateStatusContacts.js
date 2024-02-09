@@ -15,13 +15,17 @@ export async function updateStatusContacts(req, res, next) {
 
     const result = await Contact.findOne({ _id: id });
     if (result) {
-      await Contact.findByIdAndUpdate({ _id: id }, req.body, {
-        new: true,
-      });
+      const resultUpdateStatus = await Contact.findByIdAndUpdate(
+        { _id: id },
+        req.body,
+        {
+          new: true,
+        }
+      );
       return res.json({
         status: "Success",
         code: 200,
-        data: { updatedContact: result },
+        data: { updatedContact: resultUpdateStatus },
       });
     } else {
       return res.status(404).json({
