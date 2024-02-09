@@ -6,3 +6,7 @@ export const schema = Joi.object({
   phone: Joi.string().required(),
   favorite: Joi.boolean().default(false),
 });
+
+export const favoriteSchema = Joi.object({
+  favorite: Joi.boolean().required(),
+});

@@ -1,26 +1,30 @@
-import { schema } from "../../helpers/joiValid.js";
-import { updateContactDB } from "../../service/contacts.service.js";
+import { favoriteSchema } from "../../helpers/joiValid.js";
+import { Contact } from "../../service/schemas/contact.schemas.js";
 
-export const updateStatusContacts = async (req, res, next) => {
-  const { value, error } = schema.validate(req.body);
-  const { id } = req.params;
-  const { favorite } = value;
-  const owner = req.user.id;
-
-  if (error) {
-    return res.status(400).json({ message: "missing field favorite" });
-  }
-
+export async function updateStatusContacts(req, res, next) {
   try {
-    const result = await updateContactDB({ id, favorite, owner });
+    const { id } = req.params;
+    const validBody = favoriteSchema.validate(req.body);
+
+    if (validBody.error) {
+      return res.status(400).json({
+        message: "missing field favorite",
+        error: validBody.error,
+      });
+    }
+
+    const result = await Contact.findOne({ _id: id });
     if (result) {
-      res.json({
+      await Contact.findByIdAndUpdate({ _id: id }, req.body, {
+        new: true,
+      });
+      return res.json({
         status: "Success",
         code: 200,
         data: { updatedContact: result },
       });
     } else {
-      res.status(404).json({
+      return res.status(404).json({
         status: "error",
         code: 404,
         message: `Not found contact id: ${id}`,
@@ -31,4 +35,4 @@ export const updateStatusContacts = async (req, res, next) => {
     console.error(err);
     next(err);
   }
-};
+}

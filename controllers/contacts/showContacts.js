@@ -1,15 +1,17 @@
-import { getContactByIdDB } from "../../service/contacts.service.js";
+import { Contact } from "../../service/schemas/contact.schemas.js";
 
 export async function showContacts(req, res, next) {
-  const { id } = req.params;
-  const owner = req.user;
-
   try {
-    const contacts = await getContactByIdDB({ id, owner });
+    const id = req.params.id;
+    const owner = req.user.id;
+    const contact = await Contact.findOne({ id, owner });
 
-    const contact = contacts.filter((contact) => contact.id === parseInt(id));
-    return res.status(200).json({ contact });
+    if (contact) {
+      return res.status(200).json({ contact });
+    } else {
+      return res.status(404).json(` Not found id: ${id}`);
+    }
   } catch (err) {
-    return res.status(404).json(` Not found: ${err}`);
+    next(err);
   }
 }

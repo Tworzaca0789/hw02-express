@@ -1,39 +1,39 @@
-import mongoose, { model } from "mongoose";
-import bcrypt from "bcryptjs";
-const { Schema } = mongoose;
+import { Schema, model } from "mongoose";
+import Joi from "joi";
 
-const userSchema = new Schema(
-  {
-    password: {
-      type: String,
-      required: [true, "Password is required"],
-    },
-    email: {
-      type: String,
-      required: [true, "Email is required"],
-      unique: true,
-    },
-    subscription: {
-      type: String,
-      enum: ["starter", "pro", "business"],
-      default: "starter",
-    },
-    token: {
-      type: String,
-      default: null,
-    },
+const userSchema = new Schema({
+  password: {
+    type: String,
+    required: [true, "Password is required"],
   },
-  { versionKey: false, timestamps: true }
-);
+  email: {
+    type: String,
+    required: [true, "Email is required"],
+    unique: true,
+  },
+  subscription: {
+    type: String,
+    enum: ["starter", "pro", "business"],
+    default: "starter",
+  },
+  token: {
+    type: String,
+    default: null,
+  },
+});
 
-userSchema.methods.setPassword = async function (password) {
-  this.password = await bcrypt.hash(password, salt);
-};
+export const registerUserSchema = Joi.object({
+  email: Joi.string().email({ minDomainSegments: 3 }).required(),
+  password: Joi.string().min(7).required(),
+});
 
-userSchema.methods.validatePassword = async function (password) {
-  return bcrypt.compare(password, this.password);
-};
+export const loginUserSchema = Joi.object({
+  email: Joi.string().email({ minDomainSegments: 3 }).required(),
+  password: Joi.string().min(7).required(),
+});
 
-const User = model("user", userSchema);
+export const subscriptionUserSchema = Joi.object({
+  subscription: Joi.string().valid("starter", "pro", "business").required(),
+});
 
-export default User;
+export const User = model("user", userSchema);
