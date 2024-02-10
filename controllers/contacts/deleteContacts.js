@@ -1,17 +1,19 @@
-import { removeContactDB } from "../../models/contacts.js";
+import { Contact } from "../../service/schemas/contact.schemas.js";
 
 export async function deleteContacts(req, res, next) {
-  const { id } = req.params;
   try {
-    const result = await removeContactDB({ id });
+    const { id } = req.params;
+    const { owner } = req.user;
+    const result = await Contact.findOne({ _id: id, owner });
     if (result) {
-      res.json({
+      const contactDelete = await Contact.findByIdAndDelete({ _id: id });
+      return res.json({
         status: "success",
         code: 200,
-        data: { deletedContact: result },
+        data: { deletedContact: contactDelete },
       });
     } else {
-      res.status(404).json({
+      return res.status(404).json({
         status: "error",
         code: 404,
         message: `Not found contact id: ${id}`,
@@ -21,5 +23,6 @@ export async function deleteContacts(req, res, next) {
   } catch (err) {
     console.error(err);
     next(err);
+    return res.status(500).json({ message: "Serwer error" });
   }
 }

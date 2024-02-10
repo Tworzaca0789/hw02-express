@@ -1,24 +1,38 @@
 import { schema } from "../../helpers/joiValid.js";
-import { updateContactDB } from "../../models/contacts.js";
+import { Contact } from "../../service/schemas/contact.schemas.js";
 
 export async function updateContacts(req, res, next) {
-  const { value, error } = schema.validate(req.body);
-  const { name, email, phone } = value;
-  const { id } = req.params;
-  if (error) {
-    return res.status(400).json({ message: error.message });
-  }
-
   try {
-    const contact = await updateContactDB({ id, name, email, phone });
+    const { id } = req.params;
+    const { owner } = req.user.id;
+    const validBody = schema.validate(req.body);
+
+    if (validBody.error) {
+      return res.status(400).json({
+        error: validBody.error,
+      });
+    }
+
+    const contact = await Contact.findOne({
+      _id: id,
+      owner,
+    });
+
     if (contact) {
-      res.json({
+      const contactUpdate = await Contact.findByIdAndUpdate(
+        { _id: id },
+        req.body,
+        {
+          new: true,
+        }
+      );
+      return res.json({
         status: "success",
         code: 200,
-        data: { updatedContact: contact },
+        data: { updatedContact: contactUpdate },
       });
     } else {
-      res.status(404).json({
+      return res.status(404).json({
         status: "error",
         code: 404,
         message: `Not found contact id: ${id}`,

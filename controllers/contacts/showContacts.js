@@ -1,13 +1,16 @@
-import { getContactByIdDB } from "../../models/contacts.js";
+import { Contact } from "../../service/schemas/contact.schemas.js";
 
 export async function showContacts(req, res, next) {
   try {
-    const contacts = await getContactByIdDB();
     const { id } = req.params;
+    const contact = await Contact.findOne({ _id: id });
 
-    const contact = contacts.filter((contact) => contact.id === parseInt(id));
-    return res.status(200).json({ contact });
+    if (contact) {
+      return res.status(200).json({ contact });
+    } else {
+      return res.status(404).json(` Not found id: ${id}`);
+    }
   } catch (err) {
-    return res.status(404).json(` Not found: ${err}`);
+    next(err);
   }
 }

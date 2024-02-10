@@ -1,5 +1,5 @@
 import express from "express";
-
+import auth from "../../middlewares/auth-jwt.js";
 import { indexContacts } from "../../controllers/contacts/indexContacts.js";
 import { showContacts } from "../../controllers/contacts/showContacts.js";
 import { createContacts } from "../../controllers/contacts/createContacts.js";
@@ -9,16 +9,16 @@ import { updateStatusContacts } from "../../controllers/contacts/updateStatusCon
 
 const router = express.Router();
 
-router.get("/", indexContacts);
+router.get("/", auth, indexContacts);
 
-router.get("/:id", showContacts);
+router.get("/:id", auth, showContacts);
 
-router.post("/", createContacts);
+router.post("/", auth, createContacts);
 
-router.put("/:id", updateContacts);
+router.put("/:id", auth, updateContacts);
 
-router.patch("/:id/favorite", updateStatusContacts);
+router.patch("/:id/favorite", auth, updateStatusContacts);
 
-router.delete("/:id", deleteContacts);
+router.delete("/:id", auth, deleteContacts);
 
 export { router };

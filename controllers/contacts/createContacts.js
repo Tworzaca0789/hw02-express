@@ -1,24 +1,22 @@
-import { createContactDB } from "../../models/contacts.js";
 import { schema } from "../../helpers/joiValid.js";
+import { Contact } from "../../service/schemas/contact.schemas.js";
 
-export const createContacts = async (req, res, next) => {
-  const { value, error } = schema.validate(req.body);
-  const { name, email, phone } = value;
-
-  if (error) {
-    return res.status(400).json({ message: error.message });
-  }
-
+export async function createContacts(req, res, next) {
   try {
-    const contact = await createContactDB({ name, email, phone });
+    const validContact = schema.validate(req.body);
+    if (validContact.error) {
+      return res.status(400).json({ error: validContact.error });
+    }
 
-    res.status(201).json({
-      status: "success",
-      code: 201,
-      data: { createdContact: contact },
+    const contact = await Contact.create({
+      ...req.body,
+      owner: req.user._id,
     });
+
+    return res.status(201).json(contact);
   } catch (err) {
     console.error(err);
     next(err);
+    return res.status(500).json({ message: "Server error" });
   }
-};
+}

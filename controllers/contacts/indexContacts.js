@@ -1,12 +1,23 @@
-import { listContactsDB } from "../../models/contacts.js";
+import { Contact } from "../../service/schemas/contact.schemas.js";
 
 export async function indexContacts(req, res, next) {
   try {
-    const contacts = await listContactsDB();
-    return res.status(200).json({
-      contacts,
+    const owner = req.user;
+    const page = req.query.page || 1;
+    const limit = req.query.limit || 20;
+    const favorite = req.query.favorite;
+
+    const filter = favorite ? { favorite } : [];
+    const skip = page * limit - limit;
+
+    const result = await Contact.find({ owner, ...filter }, "", {
+      skip,
+      limit,
     });
+
+    return res.status(200).json(result);
   } catch (err) {
-    res.status(500).json(`An error occurred:${err}`);
+    next(err);
+    return res.status(500).json(`An error occurred:${err}`);
   }
 }
