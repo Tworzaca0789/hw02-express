@@ -7,7 +7,7 @@ import Jimp from "jimp";
 const updateAvatarsDir = path.join(process.cwd(), "public/avatars");
 
 export const updateAvatar = async (req, res, next) => {
-  const { _id: user } = req.user;
+  const { _id: userId } = req.user;
   const { path: temporaryName, originalname } = req.file;
   const fileName = path.join(updateAvatarsDir, originalname);
   try {
@@ -19,12 +19,12 @@ export const updateAvatar = async (req, res, next) => {
     });
 
     const avatarURL = path.join("avatars", originalname);
-    await User.findByIdAndUpdate(user, { avatarURL });
+    await User.findByIdAndUpdate(userId, { avatarURL });
 
     return res.status(200).json({
       status: "200 OK",
       "Content-Type": "application/json",
-      user_id: user,
+      user_id: userId,
       ResponseBody: { avatarURL: avatarURL },
       message: "Avatar loaded successfully",
     });
