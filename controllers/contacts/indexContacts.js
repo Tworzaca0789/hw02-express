@@ -18,6 +18,5 @@ export async function indexContacts(req, res, next) {
     return res.status(200).json(result);
   } catch (err) {
     next(err);
-    return res.status(500).json(`An error occurred:${err}`);
   }
 }
