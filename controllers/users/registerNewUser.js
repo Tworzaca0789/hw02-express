@@ -3,6 +3,7 @@ import {
   registerUserSchema,
 } from "../../service/schemas/user.schemas.js";
 import bcrypt from "bcryptjs";
+import gravatar from "gravatar";
 
 export async function registerNewUser(req, res, next) {
   const validBody = registerUserSchema.validate(req.body);
@@ -26,10 +27,12 @@ export async function registerNewUser(req, res, next) {
     }
     const salt = await bcrypt.genSalt(10);
     const hashPassword = await bcrypt.hash(password, salt);
+    const avatarURL = gravatar.url(email);
 
     const newUser = await User.create({
       email,
       password: hashPassword,
+      avatarURL,
     });
 
     return res.status(201).json({
@@ -40,6 +43,7 @@ export async function registerNewUser(req, res, next) {
         user: {
           email: newUser.email,
           subscription: newUser.subscription,
+          avatarURL: newUser.avatarURL,
         },
       },
     });
