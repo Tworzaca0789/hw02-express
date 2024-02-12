@@ -1,9 +1,11 @@
+import { nanoid } from "nanoid";
 import {
   User,
   registerUserSchema,
 } from "../../service/schemas/user.schemas.js";
 import bcrypt from "bcryptjs";
 import gravatar from "gravatar";
+import send from "../../config/nodemailer.config.js";
 
 export async function registerNewUser(req, res, next) {
   const validBody = registerUserSchema.validate(req.body);
@@ -29,10 +31,24 @@ export async function registerNewUser(req, res, next) {
     const hashPassword = await bcrypt.hash(password, salt);
     const avatarURL = gravatar.url(email);
 
+    const verificationToken = nanoid();
+
+    const sendEmail = await send({ email, verificationToken });
+
+    if (!sendEmail) {
+      return res.status(500).json({
+        status: "error",
+        "Content-Type": "application/json",
+        ResponseBody: { message: "Server error" },
+      });
+    }
+
     const newUser = await User.create({
       email,
       password: hashPassword,
       avatarURL,
+      verify: false,
+      verificationToken,
     });
 
     return res.status(201).json({
@@ -49,9 +65,5 @@ export async function registerNewUser(req, res, next) {
     });
   } catch (error) {
     next(error);
-    return res.status(500).json({
-      status: "500",
-      message: "Server error",
-    });
   }
 }

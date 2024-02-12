@@ -1,4 +1,3 @@
-//export const updateAvatar = () => {};
 import { User } from "../../service/schemas/user.schemas.js";
 import path from "path";
 import fs from "node:fs/promises";
