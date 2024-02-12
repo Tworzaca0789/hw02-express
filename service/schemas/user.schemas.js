@@ -49,4 +49,8 @@ export const subscriptionUserSchema = Joi.object({
   subscription: Joi.string().valid("starter", "pro", "business").required(),
 });
 
+export const userVerificationSchema = Joi.object({
+  email: Joi.string().email().required(),
+});
+
 export const User = model("user", userSchema);
